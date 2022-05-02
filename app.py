@@ -10,16 +10,16 @@ from flask import Flask, redirect, render_template, request, flash, url_for
 app = Flask(__name__)
 
 
-cred = credentials.Certificate("acount_key_api-user.json")
+cred = credentials.Certificate("key_api_todolist.json")
 fire = firebase_admin.initialize_app(cred)
 
 app.config["KEY"] = " "
 
 
 db = firestore.client()
-
-users_ref = db.collection("user")
 tasks_ref = db.collection("tasks")
+users_ref = db.collection("users")
+
 
 API_key = "#pendiente"
 
@@ -100,8 +100,9 @@ def home():
       if user_authentication:
          try:
             tasks = read_tasks(tasks_ref)
-            completed = []
             incompleted = []
+            completed = []
+            
             for task in tasks:
                print(task["check"])
                if task["check"] == True:
@@ -127,18 +128,18 @@ def home():
          create_task(tasks_ref, name)
          return redirect("/")
       except:
-         return render_template("error.html", response = "response")                                       
+         return render_template("Interfaz/Error.html", response = "response")                                       
 
 #UPDATE
 @app.route("/update/<string:id>", methods = ["GET"])
 def update(id):
-   print(f"\n Deseas actualizar la tarea: {id}")
+   print(f"\n Actualizar Task: {id}")
    try:
       update_task(tasks_ref, id)
-      print("La tarea fue actualizada...")
+      print("Actualizacion completada")
       return redirect("/")
    except:
-      return render_template("error.html", response = "response")   
+      return render_template("Interfaz/Error.html", response = "response")   
 
 
 if __name__ == "__main__":
